@@ -9,42 +9,18 @@
 <body>
     <header>
         <h1>Super Stickman Golf Course Maker</h1>
-        <p>Customize your course by editing the details below.</p>
+        <p>Adjust the par for each hole in your custom course below.</p>
     </header>
 
-    <section id="course-details">
-        <h2>Edit Course Details</h2>
-        <form id="courseForm">
-            <label for="courseName">Course Name:</label>
-            <input type="text" id="courseName" name="courseName">
-
-            <label for="courseDifficulty">Difficulty:</label>
-            <select id="courseDifficulty" name="courseDifficulty">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-
-            <label for="courseMusic">Music:</label>
-            <input type="text" id="courseMusic" name="courseMusic">
-
-            <label for="courseNotes">Notes:</label>
-            <textarea id="courseNotes" name="courseNotes"></textarea>
-
-            <label for="starsRequired">Stars Required:</label>
-            <input type="number" id="starsRequired" name="starsRequired" min="0">
-
-            <h3>Edit Hole Pars</h3>
-            <div id="par-editor">
-                <form id="parForm">
-                    <!-- Dynamically generated hole par inputs will go here -->
-                </form>
-            </div>
-
-            <button id="saveButton">Save Course</button>
+    <section id="par-editor">
+        <h2>Edit Hole Pars</h2>
+        <form id="parForm">
+            <!-- Dynamically generated hole par inputs will go here -->
         </form>
+        <button id="saveButton">Save Pars</button>
     </section>
 
+    <!-- Move the script here -->
     <script src="course_editor.js"></script> <!-- Link to your JavaScript file -->
 </body>
 </html>
