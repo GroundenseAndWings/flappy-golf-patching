@@ -1,54 +1,39 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const courseData = {
-        name: "Lofstrom Links 2024",
-        difficulty: "easy",
-        music: "Song1",
-        notes: "The grassiest level!",
-        starsRequired: 0,
-        holePars: [3, 3, 3, 3, 3, 3, 3, 3, 3]
-    };
+    try {
+        const parForm = document.getElementById('parForm');
+        const saveButton = document.getElementById('saveButton');
 
-    // Populate course details
-    document.getElementById('courseName').value = courseData.name;
-    document.getElementById('courseDifficulty').value = courseData.difficulty;
-    document.getElementById('courseMusic').value = courseData.music;
-    document.getElementById('courseNotes').value = courseData.notes;
-    document.getElementById('starsRequired').value = courseData.starsRequired;
+        // Example data: Array of hole pars
+        const holePars = [3, 3, 4, 4, 5, 3, 4, 5, 3]; // Adjust this array as needed
 
-    // Populate hole pars
-    const parForm = document.getElementById('parForm');
-    courseData.holePars.forEach((par, index) => {
-        const label = document.createElement('label');
-        label.textContent = `Hole ${index + 1} Par:`;
+        // Generate input fields for each hole
+        holePars.forEach((par, index) => {
+            const label = document.createElement('label');
+            label.textContent = `Hole ${index + 1} Par:`;
 
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.min = 1;
-        input.value = par;
-        input.id = `hole${index + 1}`;
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = 1;
+            input.value = par;
+            input.id = `hole${index + 1}`;
 
-        parForm.appendChild(label);
-        parForm.appendChild(input);
-    });
-
-    // Handle save button click
-    document.getElementById('saveButton').addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent form submission
-
-        const updatedCourseData = {
-            name: document.getElementById('courseName').value,
-            difficulty: document.getElementById('courseDifficulty').value,
-            music: document.getElementById('courseMusic').value,
-            notes: document.getElementById('courseNotes').value,
-            starsRequired: Number(document.getElementById('starsRequired').value),
-            holePars: []
-        };
-
-        courseData.holePars.forEach((_, index) => {
-            updatedCourseData.holePars.push(Number(document.getElementById(`hole${index + 1}`).value));
+            parForm.appendChild(label);
+            parForm.appendChild(input);
         });
 
-        console.log('Updated Course Data:', updatedCourseData);
-        // Here, you would typically save the updatedCourseData back to your data structure or file
-    });
+        // Handle save button click
+        saveButton.addEventListener('click', () => {
+            const newPars = [];
+
+            holePars.forEach((_, index) => {
+                const input = document.getElementById(`hole${index + 1}`);
+                newPars.push(Number(input.value));
+            });
+
+            console.log('New Pars:', newPars);
+            // Here, you would typically save the newPars array back to your data structure or file
+        });
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
 });
