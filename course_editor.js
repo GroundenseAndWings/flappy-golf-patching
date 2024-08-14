@@ -3,29 +3,21 @@ document.addEventListener("DOMContentLoaded", function() {
         const saveButton = document.getElementById('saveButton');
         const terrainCanvas = document.getElementById('terrainCanvas');
         const ctx = terrainCanvas.getContext('2d');
+
         let drawing = false;
         let terrainVertices = []; // This will store the terrain vertices
 
-        // Example: Decoded vertices from the Python script
-        // (These would typically come from the level.plist, decoded via the Python script)
-        const exampleBase64 = 
-                       `AIB/RAIAykP/v3tEAIDDQwCAeUQAgLpDAIB4
-						RASAsEP//3dE/v+YQwCAdkQAgIxDAEB0RAAA
-						gkMAwHBE/P9zQwKAbEQAAGlDAkBnRAAAY0P/
-						P2VE+P9hQ/8/WEQAAGJD/j9YRAAAXUP+/1VE
-						/P9cQ/7/VUQAAGJD/j84RAAAYkP+vzJEAABg
-						QwOAK0QIAFVDA8AkRAgAQUMCQCBECAA7QwKA
-						G0QIADtDAAAXRPz/QUMBABFEAABVQ/7/C0T8
-						/19D/n8GRAAAZUP+/wFEAABlQ/x/90MAAGND
-						BIDnQwgAV0P8f9tD+P9DQ/5/1kMAADlDAQDM
-						QwAAKkP+/8NDAAAiQ/x/vEMAAB9DBACtQwQA
-						H0MAAKBDAAAmQwCAl0MAAC9DBACKQwAAQ0MA
-						AIRD+P9JQwIAdEMEAE9DDABnQwAAUEMAAJhC
-						+P9PQwgAiEL4/1RDIAB8QgAAX0MwAHhC/P+M
-						Q+D/W0IAgJNDCAA0Qvx/lkPo/xtCBACXQwAA
-						AAAAAJdDIPDAOAAAAAAAAIBEAAAAOf7/f0QA
-						AMlD`
-        const decodedVertices = base64_to_vertices(exampleBase64); // Use your actual Base64 string
+        // Example: Decoded vertices from the Base64 string
+        const exampleBase64 = `AIB/RAIAykP/v3tEAIDDQwCAeUQAgLpDAIB4RASAsEP//3dE/v+YQwCAdkQAgIxDAEB0RAAA
+        gkMAwHBE/P9zQwKAbEQAAGlDAkBnRAAAY0P/P2VE+P9hQ/8/WEQAAGJD/j9YRAAAXUP+/1VE
+        /P9cQ/7/VUQAAGJD/j84RAAAYkP+vzJEAABgQwOAK0QIAFVDA8AkRAgAQUMCQCBECAA7QwKA
+        G0QIADtDAAAXRPz/QUMBABFEAABVQ/7/C0T8/19D/n8GRAAAZUP+/wFEAABlQ/x/90MAAGND
+        BIDnQwgAV0P8f9tD+P9DQ/5/1kMAADlDAQDMQwAAKkP+/8NDAAAiQ/x/vEMAAB9DBACtQwQA
+        H0MAAKBDAAAmQwCAl0MAAC9DBACKQwAAQ0MAAIRD+P9JQwIAdEMEAE9DDABnQwAAUEMAAJhC
+        +P9PQwgAiEL4/1RDIAB8QgAAX0MwAHhC/P+MQ+D/W0IAgJNDCAA0Qvx/lkPo/xtCBACXQwAA
+        AAAAAAJdDIPDAOAAAAAAAAIBEAAAAOf7/f0QAAMlD`;
+
+        const decodedVertices = base64_to_vertices(exampleBase64); // Decode the Base64 string to vertices
 
         // Draw the initial terrain from the decoded vertices
         function drawTerrain(vertices) {
@@ -93,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 notes: document.getElementById('courseNotes').value,
                 starsRequired: Number(document.getElementById('starsRequired').value),
                 holePars: newPars,
-                terrain: base64Terrain // Save the terrain as Base64 string
+                terrain: base64Terrain // Save the terrain as a Base64 string
             };
 
             console.log('Updated Course Data:', updatedCourseData);
@@ -104,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// Helper functions for base64 conversion (to be added to your JS)
+// Helper functions for base64 conversion
 function vertices_to_base64(vertices) {
     const binaryData = vertices.flatMap(vertex => 
         Array.from(new Uint8Array(new Float32Array(vertex).buffer))
@@ -113,15 +105,23 @@ function vertices_to_base64(vertices) {
 }
 
 function base64_to_vertices(base64_string) {
-    const binaryString = atob(base64_string);
-    const binaryData = new Uint8Array(binaryString.split('').map(char => char.charCodeAt(0)));
-    const vertices = [];
+    // Sanitize the base64 string by removing any non-base64 characters like spaces and newlines
+    const sanitizedBase64 = base64_string.replace(/[\n\r\s]/g, '');
 
-    for (let i = 0; i < binaryData.length; i += 8) {
-        const x = new Float32Array(binaryData.slice(i, i + 4).buffer)[0];
-        const y = new Float32Array(binaryData.slice(i + 4, i + 8).buffer)[0];
-        vertices.push([x, y]);
+    try {
+        const binaryString = atob(sanitizedBase64);
+        const binaryData = new Uint8Array(binaryString.split('').map(char => char.charCodeAt(0)));
+        const vertices = [];
+
+        for (let i = 0; i < binaryData.length; i += 8) {
+            const x = new Float32Array(binaryData.slice(i, i + 4).buffer)[0];
+            const y = new Float32Array(binaryData.slice(i + 4, i + 8).buffer)[0];
+            vertices.push([x, y]);
+        }
+
+        return vertices;
+    } catch (e) {
+        console.error('Failed to decode Base64 string:', e);
+        return [];
     }
-
-    return vertices;
 }
