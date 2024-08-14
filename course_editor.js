@@ -3,14 +3,35 @@ document.addEventListener("DOMContentLoaded", function() {
         const saveButton = document.getElementById('saveButton');
         const terrainCanvas = document.getElementById('terrainCanvas');
         const ctx = terrainCanvas.getContext('2d');
-
         let drawing = false;
+        let terrainVertices = []; // This will store the terrain vertices
+
+        // Example: Decoded vertices from the Python script
+        // (These would typically come from the level.plist, decoded via the Python script)
+        const exampleBase64 = "AIB/RAIAykP/v3tEAIDDQwCAeUQAgLpDAIB4...";
+        const decodedVertices = base64_to_vertices(exampleBase64); // Use your actual Base64 string
+
+        // Draw the initial terrain from the decoded vertices
+        function drawTerrain(vertices) {
+            if (vertices.length > 0) {
+                ctx.beginPath();
+                ctx.moveTo(vertices[0][0], vertices[0][1]);
+                for (let i = 1; i < vertices.length; i++) {
+                    ctx.lineTo(vertices[i][0], vertices[i][1]);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+        }
+
+        drawTerrain(decodedVertices);
 
         // Start drawing
         terrainCanvas.addEventListener('mousedown', (e) => {
             drawing = true;
             ctx.beginPath();
             ctx.moveTo(e.offsetX, e.offsetY);
+            terrainVertices.push([e.offsetX, e.offsetY]);
         });
 
         // Draw line
@@ -18,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (drawing) {
                 ctx.lineTo(e.offsetX, e.offsetY);
                 ctx.stroke();
+                terrainVertices.push([e.offsetX, e.offsetY]);
             }
         });
 
@@ -36,8 +58,8 @@ document.addEventListener("DOMContentLoaded", function() {
         saveButton.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent form submission
 
-            // Collect terrain data as an image
-            const terrainData = terrainCanvas.toDataURL();
+            // Convert terrainVertices to Base64 for saving
+            const base64Terrain = vertices_to_base64(terrainVertices);
 
             // Collect the updated pars manually from the inputs
             const newPars = [];
@@ -55,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 notes: document.getElementById('courseNotes').value,
                 starsRequired: Number(document.getElementById('starsRequired').value),
                 holePars: newPars,
-                terrain: terrainData // Save the terrain as an image data URL
+                terrain: base64Terrain // Save the terrain as Base64 string
             };
 
             console.log('Updated Course Data:', updatedCourseData);
@@ -65,3 +87,25 @@ document.addEventListener("DOMContentLoaded", function() {
         console.error('An error occurred:', error);
     }
 });
+
+// Helper functions for base64 conversion (to be added to your JS)
+function vertices_to_base64(vertices) {
+    const binaryData = vertices.flatMap(vertex => 
+        Array.from(new Uint8Array(new Float32Array(vertex).buffer))
+    );
+    return btoa(String.fromCharCode.apply(null, binaryData));
+}
+
+function base64_to_vertices(base64_string) {
+    const binaryString = atob(base64_string);
+    const binaryData = new Uint8Array(binaryString.split('').map(char => char.charCodeAt(0)));
+    const vertices = [];
+
+    for (let i = 0; i < binaryData.length; i += 8) {
+        const x = new Float32Array(binaryData.slice(i, i + 4).buffer)[0];
+        const y = new Float32Array(binaryData.slice(i + 4, i + 8).buffer)[0];
+        vertices.push([x, y]);
+    }
+
+    return vertices;
+}
