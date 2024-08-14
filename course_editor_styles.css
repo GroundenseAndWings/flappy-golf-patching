@@ -1,46 +1,112 @@
+/* General Body Styling */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
+    font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
 }
 
+/* Header Styling */
 header {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-h1 {
-    margin-bottom: 10px;
-}
-
-#par-editor {
-    background-color: white;
+    background-color: #007bff;
+    color: white;
     padding: 20px;
-    border-radius: 5px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+header p {
+    margin: 10px 0 0;
+    font-size: 1.2em;
+}
+
+/* Section Styling */
+section#course-details {
+    background-color: white;
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 600px;
+    border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#parForm {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+section h2 {
+    margin-top: 0;
+    color: #007bff;
+    font-size: 2em;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
 }
 
-#parForm label {
+/* Form Label and Input Styling */
+form label {
+    display: block;
+    margin: 15px 0 5px;
     font-weight: bold;
+    font-size: 1em;
+    color: #333;
 }
 
-#saveButton {
-    margin-top: 20px;
-    padding: 10px 20px;
+form input[type="text"],
+form input[type="number"],
+form textarea,
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+form textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+form select {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Save Button Styling */
+button#saveButton {
+    display: block;
+    width: 100%;
+    padding: 15px;
     background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 20px;
 }
 
-#saveButton:hover {
+button#saveButton:hover {
     background-color: #218838;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2em;
+    }
+
+    section#course-details {
+        padding: 15px;
+    }
+
+    button#saveButton {
+        padding: 12px;
+        font-size: 1em;
+    }
 }
